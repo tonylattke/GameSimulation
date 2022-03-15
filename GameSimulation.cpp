@@ -2,19 +2,40 @@
 //
 
 #include <iostream>
+#include "GameDatabase.h"
+#include "Utils.h"
+#include "Match.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	// Initialize database
+    GameDatabase database;
+	if (!database.loadPlayerNames("data/names.txt"))
+	{
+		std::cout << "Database cannot be loaded" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	std::cout << "Database loaded" << std::endl;
+
+	// Setup matches
+	int numberOfMatchs = 10;
+	int minNumberOfEnemies = 5;
+	int maxNumberOfEnemies = 15;
+	srand(time(0));
+
+	// Run matches
+	for (int i = 0; i < numberOfMatchs; i++)
+	{
+		// Create a match
+		double randomValue = (double)rand() / (double)RAND_MAX;
+		int numberOfEnemies = randomValue * maxNumberOfEnemies;
+		numberOfEnemies = clamp(numberOfEnemies, minNumberOfEnemies, maxNumberOfEnemies);
+		Match match(i, numberOfEnemies, database);
+
+		// Simulate match
+		match.simulate();
+
+		// Show results
+		match.printMatchStats();
+	}
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
